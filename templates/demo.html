@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Green API Demo - Управление WhatsApp через Green API">
+    <title>Green API Demo</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>🟢 Green API <span class="demo-badge">DEMO</span></h1>
+            <p class="subtitle">Управление WhatsApp через Green API (Демо-режим)</p>
+        </header>
+
+        <main class="main-content">
+            <aside class="left-panel">
+                <section class="panel-section credentials-section">
+                    <h2>🔐 Учетные данные</h2>
+                    <div class="form-group">
+                        <label for="idInstance">ID инстанса:</label>
+                        <input
+                            type="text"
+                            id="idInstance"
+                            class="form-control readonly"
+                            readonly
+                            placeholder="Загрузка..."
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="apiTokenInstance">Токен API:</label>
+                        <input
+                            type="text"
+                            id="apiTokenInstance"
+                            class="form-control readonly"
+                            readonly
+                            placeholder="Загрузка..."
+                        >
+                        <small class="hint">Токен замаскирован для безопасности</small>
+                    </div>
+                    <div class="alert alert-info">
+                        ℹ️ Это демо-режим с предзаполненными учетными данными.
+                        Для использования ваших данных перейдите на <a href="/">главную страницу</a>.
+                    </div>
+                </section>
+
+                <section class="panel-section buttons-section">
+                    <h2>📊 Информация об аккаунте</h2>
+                    <div class="button-group vertical">
+                        <button
+                            id="btnGetSettings"
+                            class="btn btn-primary"
+                            onclick="getSettings()"
+                        >
+                            📋 Get Settings
+                        </button>
+                        <button
+                            id="btnGetStateInstance"
+                            class="btn btn-secondary"
+                            onclick="getStateInstance()"
+                        >
+                            🔄 Get State Instance
+                        </button>
+                    </div>
+                </section>
+
+                <section class="panel-section message-section">
+                    <h2>💬 Отправить сообщение</h2>
+                    <div class="form-group">
+                        <label for="messageChatId">Chat ID:</label>
+                        <input
+                            type="text"
+                            id="messageChatId"
+                            class="form-control"
+                            placeholder="79193784116@c.us"
+                            value="79193784116@c.us"
+                        >
+                        <small class="hint">Формат: номер@c.us (например, 79193784116@c.us)</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="messageText">Сообщение:</label>
+                        <textarea
+                            id="messageText"
+                            class="form-control"
+                            rows="3"
+                            placeholder="Введите текст сообщения..."
+                        ></textarea>
+                    </div>
+                    <button
+                        id="btnSendMessage"
+                        class="btn btn-success btn-full"
+                        onclick="sendMessage()"
+                    >
+                        📤 Отправить сообщение
+                    </button>
+                </section>
+
+                <section class="panel-section file-section">
+                    <h2>📎 Отправить файл по URL</h2>
+                    <div class="form-group">
+                        <label for="fileChatId">Chat ID:</label>
+                        <input
+                            type="text"
+                            id="fileChatId"
+                            class="form-control"
+                            placeholder="79193784116@c.us"
+                            value="79193784116@c.us"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="fileUrl">URL файла:</label>
+                        <input
+                            type="url"
+                            id="fileUrl"
+                            class="form-control"
+                            placeholder="https://example.com/file.png"
+                        >
+                        <small class="hint">Прямая ссылка на файл (начинается с http:// или https://)</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="fileName">Название файла:</label>
+                        <input
+                            type="text"
+                            id="fileName"
+                            class="form-control"
+                            placeholder="file.png"
+                        >
+                        <small class="hint">Обязательно. Должно содержать расширение</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="fileCaption">Подпись (необязательно):</label>
+                        <input
+                            type="text"
+                            id="fileCaption"
+                            class="form-control"
+                            placeholder="Описание файла..."
+                        >
+                    </div>
+                    <button
+                        id="btnSendFile"
+                        class="btn btn-info btn-full"
+                        onclick="sendFileByUrl()"
+                    >
+                        📤 Отправить файл по URL
+                    </button>
+                </section>
+            </aside>
+
+            <section class="right-panel">
+                <div class="response-container">
+                    <div class="response-header">
+                        <h2>📭 Ответ:</h2>
+                        <button
+                            id="btnClearResponse"
+                            class="btn btn-small btn-outline"
+                            onclick="clearResponse()"
+                        >
+                            🗑️ Очистить
+                        </button>
+                    </div>
+                    <div
+                        id="responseOutput"
+                        class="response-output"
+                    >
+                        <div class="placeholder-text">
+                            <p>👈 Результаты запросов будут отображаться здесь</p>
+                            <p class="small">Нажмите любую кнопку слева для выполнения запроса</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>
+                <span class="status-indicator" id="connectionStatus">●</span>
+                <span id="statusText">Подключение...</span>
+            </p>
+            <p class="copyright">Green API Demo © 2024</p>
+            <p class="copyright">
+                <a href="/" class="demo-link">🔑 Ввести свои учетные данные</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
