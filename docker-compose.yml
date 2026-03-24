@@ -17,6 +17,9 @@ services:
     env_file:
       - .env
 
+    environment:
+      - PYTHONUNBUFFERED=1
+
     networks:
       - greenapi-network
 

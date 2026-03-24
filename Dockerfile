@@ -23,13 +23,22 @@ LABEL maintainer="Senior Backend Developer" \
 RUN groupadd --gid 1000 appgroup && \
     useradd --uid 1000 --gid appgroup --shell /bin/bash --create-home appuser
 
+ARG apiUrl \
+    mediaUrl \
+    idInstance \
+    apiTokenInstance
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/opt/venv/bin:$PATH" \
     FLASK_APP=app.py \
     FLASK_ENV=production \
     PORT=5000 \
-    HOST=0.0.0.0
+    HOST=0.0.0.0 \
+    apiUrl=${apiUrl} \
+    mediaUrl=${mediaUrl} \
+    idInstance=${idInstance} \
+    apiTokenInstance=${apiTokenInstance}
 
 COPY --from=builder /opt/venv /opt/venv
 
@@ -38,8 +47,7 @@ WORKDIR /app
 COPY --chown=appuser:appgroup app.py .
 COPY --chown=appuser:appgroup templates/ templates/
 COPY --chown=appuser:appgroup static/ static/
-COPY --chown=appuser:appgroup tests/ tests/
-COPY --chown=appuser:appgroup .env.example .env.example
+COPY --chown=appuser:appgroup .env .env
 
 RUN mkdir -p /app/logs && chown appuser:appgroup /app/logs
 
